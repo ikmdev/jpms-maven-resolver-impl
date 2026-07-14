@@ -145,7 +145,7 @@
                                     </artifact>
                                     <moduleInfoSource>
                                         module dev.ikm.jpms.maven.resolver.impl {
-                                            requires transitive org.apache.maven.resolver.api;
+                                            requires transitive org.apache.maven.resolver;
                                             requires transitive org.apache.maven.resolver.spi;
                                             requires dev.ikm.jpms.maven.resolver.named.locks;
                                             requires org.apache.maven.resolver.util;
