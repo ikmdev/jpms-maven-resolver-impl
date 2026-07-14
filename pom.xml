@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>dev.ikm.build</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.64.0</version>
+        <relativePath></relativePath>
+    </parent>
+
+    <groupId>dev.ikm.jpms</groupId>
+    <artifactId>maven-resolver-impl</artifactId>
+    <name>maven-resolver-impl</name>
+    <version>2.0.20-r1-SNAPSHOT</version>
+
+    <properties>
+        <!-- change release here-->
+        <core.artifact.version>2.0.20</core.artifact.version>
+        <core.artifact.release>r1</core.artifact.release>
+
+        <!-- transitive dependency versions -->
+        <maven-resolver-named-locks.version>2.0.20-r1-SNAPSHOT</maven-resolver-named-locks.version>
+        <slf4j-api.version>2.0.17</slf4j-api.version>
+
+        <maven.moditect.plugin>1.2.2.Final</maven.moditect.plugin>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <!-- transitive dependencies of the repackaged artifact -->
+    <dependencyManagement>
+         <dependencies>
+            <dependency>
+                <groupId>org.apache.maven.resolver</groupId>
+                <artifactId>maven-resolver-api</artifactId>
+                <version>${core.artifact.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.maven.resolver</groupId>
+                <artifactId>maven-resolver-spi</artifactId>
+                <version>${core.artifact.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.maven.resolver</groupId>
+                <artifactId>maven-resolver-util</artifactId>
+                <version>${core.artifact.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dev.ikm.jpms</groupId>
+                <artifactId>maven-resolver-named-locks</artifactId>
+                <version>${maven-resolver-named-locks.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j-api.version}</version>
+            </dependency>
+     </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+            <dependency>
+                <groupId>org.apache.maven.resolver</groupId>
+                <artifactId>maven-resolver-api</artifactId>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.maven.resolver</groupId>
+                <artifactId>maven-resolver-spi</artifactId>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.maven.resolver</groupId>
+                <artifactId>maven-resolver-util</artifactId>
+            </dependency>
+
+            <dependency>
+                <groupId>dev.ikm.jpms</groupId>
+                <artifactId>maven-resolver-named-locks</artifactId>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+            </dependency>
+     </dependencies>
+
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/</directory>
+                <includes>
+                    <include>LICENSE</include>
+                </includes>
+            </resource>
+        </resources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.moditect</groupId>
+                    <artifactId>moditect-maven-plugin</artifactId>
+                    <version>${maven.moditect.plugin}</version>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-module-infos</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/moditect</outputDirectory>
+                            <overwriteExistingFiles>true</overwriteExistingFiles>
+                            <modules>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.apache.maven.resolver</groupId>
+                                        <artifactId>maven-resolver-impl</artifactId>
+                                        <version>${core.artifact.version}</version>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module dev.ikm.jpms.maven.resolver.impl {
+                                            requires transitive org.apache.maven.resolver;
+                                            requires transitive org.apache.maven.resolver.spi;
+                                            requires dev.ikm.jpms.maven.resolver.named.locks;
+                                            requires org.apache.maven.resolver.util;
+                                            requires org.slf4j;
+
+                                            exports org.eclipse.aether.impl;
+                                            exports org.eclipse.aether.impl.scope;
+                                            exports org.eclipse.aether.internal.impl;
+                                            exports org.eclipse.aether.internal.impl.checksum;
+                                            exports org.eclipse.aether.internal.impl.collect;
+                                            exports org.eclipse.aether.internal.impl.collect.bf;
+                                            exports org.eclipse.aether.internal.impl.collect.df;
+                                            exports org.eclipse.aether.internal.impl.filter;
+                                            exports org.eclipse.aether.internal.impl.filter.prefixes;
+                                            exports org.eclipse.aether.internal.impl.filter.ruletree;
+                                            exports org.eclipse.aether.internal.impl.named;
+                                            exports org.eclipse.aether.internal.impl.offline;
+                                            exports org.eclipse.aether.internal.impl.resolution;
+                                            exports org.eclipse.aether.internal.impl.scope;
+                                            exports org.eclipse.aether.internal.impl.session;
+                                            exports org.eclipse.aether.internal.impl.synccontext;
+                                            exports org.eclipse.aether.internal.impl.synccontext.named;
+                                            exports org.eclipse.aether.internal.impl.synccontext.named.providers;
+                                            exports org.eclipse.aether.internal.impl.transport.http;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                            </modules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unzip-into-classes</id>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <target>
+                                <echo message="unzipping file"/>
+                                <unzip src="${project.build.directory}/moditect/maven-resolver-impl-${core.artifact.version}.jar"
+                                       dest="${project.build.directory}/classes/"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <id>remove-signature</id>
+                        <configuration>
+                            <target>
+                                <echo message="Deleting .RSA, .DSA, and .SF files"/>
+                                <delete>
+                                    <fileset dir="${project.build.outputDirectory}/META-INF" includes="*.RSA,*.DSA,*.SF" />
+                                </delete>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
